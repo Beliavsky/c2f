@@ -1,0 +1,201 @@
+INTERFACE  ! for routines by David Frank, Alan Miller, Jean Vezina
+           ! supplied in C2F_LIB.F90
+
+! - - - library interfaces - - -
+
+FUNCTION NARGS()  RESULT(argc)
+  INTEGER :: argc
+END FUNCTION
+
+SUBROUTINE GETARG(n, buffer, status)
+  INTEGER(2) :: n
+  CHARACTER (LEN=*) :: buffer
+  INTEGER(2), OPTIONAL :: status
+END SUBROUTINE
+
+! Below interfaces are for routines contained in C2F_LIB.F90
+
+FUNCTION ACCESS(filename, mode) RESULT(OK)
+  CHARACTER (LEN=*) :: filename
+  INTEGER :: mode
+  LOGICAL :: OK
+END FUNCTION
+
+FUNCTION CEIL(value)  RESULT(x)
+  REAL(4) :: value, x
+END FUNCTION
+
+FUNCTION FOPEN(path, action)  RESULT(unit)
+  CHARACTER (LEN=*) :: path, action
+  INTEGER :: unit
+END FUNCTION
+
+FUNCTION FEOF( unit )  RESULT(truefalse)
+  INTEGER :: unit
+  LOGICAL :: truefalse
+END FUNCTION
+
+SUBROUTINE FFLUSH (unit)
+  INTEGER :: unit
+END SUBROUTINE
+
+FUNCTION FGETC(unit,ch)  RESULT(status)
+  INTEGER :: unit, status
+  CHARACTER :: ch
+END FUNCTION
+
+FUNCTION GETCHARQQ()  RESULT(ch)
+  CHARACTER :: ch
+END FUNCTION
+
+FUNCTION TOUPPER(ch)  RESULT(up)
+  CHARACTER :: ch, up
+END FUNCTION
+
+FUNCTION TOLOWER(ch)  RESULT(lo)
+  CHARACTER :: ch, lo
+END FUNCTION
+
+FUNCTION ISALPHA(ch) RESULT(truefalse)
+  CHARACTER :: ch
+  LOGICAL :: truefalse
+END FUNCTION
+
+FUNCTION ISALNUM(ch) RESULT(truefalse)
+  CHARACTER :: ch
+  LOGICAL :: truefalse
+END FUNCTION
+
+FUNCTION ISDIGIT(ch) RESULT(truefalse)
+  CHARACTER :: ch
+  LOGICAL :: truefalse
+END FUNCTION
+
+FUNCTION ISLOWER(ch) RESULT(truefalse)
+  CHARACTER :: ch
+  LOGICAL :: truefalse
+END FUNCTION
+
+FUNCTION ISUPPER(ch) RESULT(truefalse)
+  CHARACTER :: ch
+  LOGICAL :: truefalse
+END FUNCTION
+
+FUNCTION STRCMP(s1,s2)  RESULT(truefalse)
+  CHARACTER (LEN=*) :: s1,s2
+  LOGICAL :: truefalse
+END FUNCTION
+
+FUNCTION STRNCMP(s1,s2,n)  RESULT(truefalse)
+  CHARACTER (LEN=*) :: s1,s2
+  INTEGER :: n
+  LOGICAL :: truefalse
+END FUNCTION
+
+END INTERFACE
+
+INTERFACE COPY
+SUBROUTINE COPY_I4(a,b,n)
+  INTEGER :: n
+  INTEGER :: a(n), b(n)
+END SUBROUTINE COPY_I4
+
+SUBROUTINE COPY_R4(a,b,n)
+  INTEGER :: n
+  REAL(4) :: a(n), b(n)
+END SUBROUTINE COPY_R4
+
+SUBROUTINE COPY_R8(a,b,n)
+  INTEGER :: n
+  REAL(8) :: a(n), b(n)
+END SUBROUTINE COPY_R8
+END INTERFACE
+
+INTERFACE MOVE
+SUBROUTINE MOVE_I4(a,b,n)
+  INTEGER :: n
+  INTEGER :: a(n), b(n)
+END SUBROUTINE MOVE_I4
+
+SUBROUTINE MOVE_R4(a,b,n)
+  INTEGER :: n
+  REAL(4) :: a(n), b(n)
+END SUBROUTINE MOVE_R4
+
+SUBROUTINE MOVE_R8(a,b,n)
+  INTEGER :: n
+  REAL(8) :: a(n), b(n)
+END SUBROUTINE MOVE_R8
+END INTERFACE
+
+INTERFACE CAST_TO_ARRAY_PTR    ! generic
+  FUNCTION INT_CAST_TO_ARRAY_PTR(arg)
+    INTEGER,POINTER :: INT_CAST_TO_ARRAY_PTR(:)
+    INTEGER,TARGET :: arg
+  END FUNCTION
+  FUNCTION FLT_CAST_TO_ARRAY_PTR(arg)
+    REAL(4),POINTER :: FLT_CAST_TO_ARRAY_PTR(:)
+    REAL(4),TARGET :: arg
+  END FUNCTION
+  FUNCTION DBL_CAST_TO_ARRAY_PTR(arg)
+    REAL(8),POINTER :: DBL_CAST_TO_ARRAY_PTR(:)
+    REAL(8),TARGET :: arg
+  END FUNCTION
+END INTERFACE
+
+! Convert a constant string into a pointer to a string
+INTERFACE OPERATOR(.STRPTR.)
+FUNCTION STRING_TO_PTR(string)
+CHARACTER(*),INTENT(IN)::string
+CHARACTER,POINTER,DIMENSION(:) :: STRING_TO_PTR
+END FUNCTION
+END INTERFACE
+
+INTERFACE
+ !  Convert a 1 dimensional array of characters to a character(*) string
+ FUNCTION TO_STRING(strptr)
+  CHARACTER,INTENT(IN) :: strptr(:)
+  CHARACTER*999,PARAMETER :: filler=' '
+  CHARACTER (LEN=LEN_TRIM(TRANSFER(strptr,filler(:size(strptr))))) TO_STRING
+ END FUNCTION
+
+ ! Convert a character(*) variable to a pointer to an array of n characters
+ ! This function cheats a little the standard
+ FUNCTION CV_TO_PTR(string)
+  CHARACTER(*) :: string
+  CHARACTER,POINTER,DIMENSION(:) :: CV_TO_PTR
+ END FUNCTION
+
+END INTERFACE
+
+INTERFACE MEMSET
+ SUBROUTINE MEMSET_s(STRING,CHR,N)  ! For character strings  with char chr
+  CHARACTER(*) STRING,CHR*1
+ END SUBROUTINE
+
+ SUBROUTINE MEMSET_a(STRING,CHR,N)  ! For character arrays  with char chr
+  CHARACTER(1) STRING(N),CHR
+ END SUBROUTINE
+
+ SUBROUTINE MEMSET_si(STRING,CHR,N) ! For character strings with int chr
+  CHARACTER(*) STRING
+  INTEGER CHR
+ END SUBROUTINE
+
+ SUBROUTINE MEMSET_ai(STRING,CHR,N) ! For character arrays  with int chr
+  CHARACTER(1) STRING(N)
+  INTEGER CHR
+ END SUBROUTINE
+END INTERFACE
+
+!    !! <- process all encounters with following as UPPER NAMES
+!       plus skip debug reporting names as unknown refs in pass3
+!! ABS ALLOCATE
+!! CHAR COS
+!! ICHAR INT ISHFT
+!! FLOAT FREE
+!! LEN_TRIM LOC
+!! MERGE MOD
+!! POW
+!! SIN SIZE SIZEOF SQRT
+!! TRIM

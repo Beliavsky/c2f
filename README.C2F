@@ -1,0 +1,76 @@
+C2F.ZIP can be downloaded from:
+http://home.cfl.rr.comom/davegemini/C2F.ZIP
+
+C2F.ZIP       contains:
+=======
+README.C2F    this file
+C2F.EXE       Win9x/NT console mode program
+CPP.EXE       Dos C pre-processor (only invoked if macros encountered)
+C2F.FI        Fortran Interfaces
+C2F.FD        Fortran Definitions
+C2F_LIB.F90   support routines
+DEBUG.C       C source used to check translation
+INSTALL.BAT   moves files -> C, F subdirectories
+C2F.F90       source to create C2F.EXE using CVF compiler
+
+INSTALLATION STEPS:
+-------------------
+CREATE  C2F   directory            if not already created
+CREATE  C2F\C subdirectory                 "
+CREATE  C2F\F subdirectory                 "
+UNZIP   C2F.ZIP -> C2F directory and move to that directory
+RUN INSTALL.BAT (or manually perform its commands below)
+  MOVE debug.c C\debug.c
+  MOVE c2f.fd  F\c2f.fd
+  MOVE c2f.fi  F\c2f.fi
+  MOVE c2f_lib.f90 F\c2f_lib.f90
+
+installation is complete,
+to perform a translation (where directories are created in C partition)
+
+C--|
+   |
+   --C2F--|
+          -- C
+          |
+          -- F
+
+run c2f.exe from the command line
+
+C:\C2F\>C2F.EXE       results in C2F.EXE printing out user options
+ options
+   ..
+   ..
+>>
+
+at >> prompt,
+user may key in name of a c source that has been
+moved into the c subdirectory, for example:
+
+>>DEBUG   (upper/lowercase insensitive,
+           as is adding .C to name which is ok but already assumed)
+
+results in C\debug.c file being translated to F\debug.f90 file
+
+move to f subdirectory and compile the F90 file produced (using CVF)
+C:\C2F\F\> DF DEBUG.F90
+
+and then run the DEBUG.EXE produced
+C:\C2F\F\> DEBUG
+
+which will create DEBUG.NEW file which can be compared with the
+output produced by compiling/executing debug.c using a C compiler.
+
+FINALLY:
+C2F's reporting 0 errors for your project.c file
+doesnt mean that the F90 file will compile error free,
+or that even if you can create a exe file, the exe will run ok.
+But at least you will have a leg-up on any project to create
+a FORTRAN version of your C source..
+
+Good luck
+
+David Frank
+Cocoa Beach, Florida
+retired RCA Missile Test Project radar programmer (28 yrs)..
+at Cape Canaveral/Patrick AFB Florida, and "downrange"..
